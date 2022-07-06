@@ -14,12 +14,14 @@ public class LaneFinanceApplication {
 		SpringApplication.run(LaneFinanceApplication.class, args);
 	}
 
+	@RestController
+	class TestController {
+		@GetMapping("/ping")
+		public String ping() {
+			return "pong " + Instant.now();
+		}
+	}
+
+
 }
 
-@RestController
-class TestController {
-	@GetMapping("/ping")
-	public String ping() {
-		return "pong " + Instant.now();
-	}
-}
