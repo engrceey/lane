@@ -21,8 +21,6 @@ import javax.validation.Valid;
 public class EmailController {
 
     private final SendMailService sendMailService;
-
-
     @PostMapping
     public ResponseEntity<ApiResponse<Boolean>> sendMail(@RequestBody @Valid final EmailDto emailDto) {
         return
