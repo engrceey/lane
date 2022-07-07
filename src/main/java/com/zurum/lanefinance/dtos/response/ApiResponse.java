@@ -42,8 +42,8 @@ public class ApiResponse<T> {
         return response;
     }
 
-    public static ApiResponse<?> build() {
-        ApiResponse<?> response = new ApiResponse<>();
+    public static ApiResponse<Void> build() {
+        ApiResponse<Void> response = new ApiResponse<>();
         response.setIsSuccessful(true);
         response.setStatusMessage(ResponseStatus.SUCCESSFUL.getMessage());
         return response;

@@ -1,5 +1,6 @@
 package com.zurum.lanefinance.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -24,16 +25,17 @@ public class User extends BaseEntity {
     @Column(name = "email", unique = true, length = 100)
     private String email;
 
+    @JsonIgnore
     @Column(name = "password", length = 200)
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_roles",
             joinColumns = {
-                    @JoinColumn(name = "user_id")
+                    @JoinColumn(name = "user_id", referencedColumnName = "id")
             },
             inverseJoinColumns = {
-                    @JoinColumn(name = "role_id") })
+                    @JoinColumn(name = "role_id", referencedColumnName = "id") })
     private Set<Role> roles;
 
     @Column(name = "is_verified")

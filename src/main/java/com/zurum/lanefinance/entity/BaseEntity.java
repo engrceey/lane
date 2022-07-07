@@ -1,5 +1,6 @@
 package com.zurum.lanefinance.entity;
 
+import com.zurum.lanefinance.utils.AppUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -51,13 +52,13 @@ public abstract class BaseEntity implements Serializable {
     @PrePersist
     protected void onCreate() {
         this.createdDate = new Timestamp(System.currentTimeMillis());
-//        this.createdBy = AppUtil.getPrincipal();
+        this.createdBy = AppUtil.getPrincipal();
     }
 
     @PreUpdate
     protected void onUpdate() {
         this.updatedDate = new Timestamp(System.currentTimeMillis());
-//        this.updatedBy = AppUtil.getPrincipal();
+        this.updatedBy = AppUtil.getPrincipal();
     }
 
     @Override
