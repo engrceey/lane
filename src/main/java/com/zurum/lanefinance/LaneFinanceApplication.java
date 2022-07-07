@@ -16,6 +16,7 @@ public class LaneFinanceApplication {
 	}
 
 	@RestController
+	static
 	class TestController {
 		@GetMapping("/ping")
 		public String ping() {

@@ -35,7 +35,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
