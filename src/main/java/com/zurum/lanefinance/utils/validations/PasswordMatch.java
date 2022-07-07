@@ -1,4 +1,4 @@
-package com.zurum.lanefinance.utils;
+package com.zurum.lanefinance.utils.validations;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

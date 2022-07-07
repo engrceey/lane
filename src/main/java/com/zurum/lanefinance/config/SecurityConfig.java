@@ -35,16 +35,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers( "/user/register").permitAll();
-        http.authorizeRequests().antMatchers( "/user/verify-account/**").permitAll();
+        http.authorizeRequests().antMatchers( "/auth/register").permitAll();
+        http.authorizeRequests().antMatchers( "/auth/verify-account/**").permitAll();
         http.authorizeRequests().antMatchers( "/login").permitAll();
         http.authorizeRequests().antMatchers( "/account/**").hasAnyAuthority("USER");
-        http.authorizeRequests().antMatchers(PUT, "/user/**").hasAnyAuthority("USER");
+        http.authorizeRequests().antMatchers(PUT, "/auth/**").hasAnyAuthority("USER");
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -53,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/h2-console/**");
+        web.ignoring().antMatchers("/h2-console/**", "/swagger-ui/**");
     }
 
     @Bean
