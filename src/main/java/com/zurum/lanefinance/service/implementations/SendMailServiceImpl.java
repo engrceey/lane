@@ -12,12 +12,14 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.util.Objects;
+import java.util.concurrent.Future;
 
 @Slf4j
 @Service
@@ -26,8 +28,7 @@ public class SendMailServiceImpl implements SendMailService {
     private final JavaMailSender mailSender;
 
     @Async
-    public void sendEmail(EmailDto emailDto) {
-
+    public Future<String> sendEmail(EmailDto emailDto) {
         log.info("inside Send email, building mail!!");
         MimeMessagePreparator mimeMessagePreparator = mimeMessage -> {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
@@ -40,6 +41,7 @@ public class SendMailServiceImpl implements SendMailService {
         try {
             mailSender.send(mimeMessagePreparator);
             log.info("email has sent!!");
+            return new AsyncResult<>("email sent");
         }catch (MailException exception) {
             log.error("Exception occurred when sending mail {}",exception.getMessage());
             throw new CustomException("Exception occurred when sending mail to " + emailDto.getRecipient(), HttpStatus.EXPECTATION_FAILED);
@@ -47,7 +49,7 @@ public class SendMailServiceImpl implements SendMailService {
     }
 
     @Async
-    public void sendEmailWithAttachment(EmailDto emailDto) throws MessagingException {
+    public Future<String> sendEmailWithAttachment(EmailDto emailDto) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
 
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
@@ -65,6 +67,8 @@ public class SendMailServiceImpl implements SendMailService {
                             .requireNonNull(fileSystemResource.getFilename()),fileSystemResource);
 
             mailSender.send(mimeMessage);
+            log.info("email has sent!!");
+            return new AsyncResult<>("email sent");
         } catch (MailException exception) {
             log.error("Exception occurred when sending mail {}",exception.getMessage());
             throw new CustomException("Exception occurred when sending mail to " + emailDto.getRecipient(), HttpStatus.EXPECTATION_FAILED);
