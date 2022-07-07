@@ -1,6 +1,7 @@
 package com.zurum.lanefinance.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.zurum.lanefinance.constants.KycLevel;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -24,6 +25,10 @@ public class User extends BaseEntity {
 
     @Column(name = "email", unique = true, length = 100)
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "kyc_level")
+    private KycLevel kycLevel;
 
     @JsonIgnore
     @Column(name = "password", length = 200)

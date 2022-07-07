@@ -1,6 +1,5 @@
 package com.zurum.lanefinance.dtos.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.zurum.lanefinance.constants.ResponseStatus;
 import lombok.AllArgsConstructor;
@@ -8,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,8 +19,7 @@ public class ApiResponse<T> {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String statusCode;
     private Boolean isSuccessful;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd@HH:mm:ss.SSSZ")
-    private final Instant time = Instant.now();
+    private final LocalDateTime time = LocalDateTime.now();
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
 

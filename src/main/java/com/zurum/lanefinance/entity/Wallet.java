@@ -15,13 +15,13 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @SuperBuilder
 @Table(name = "wallet",
-        indexes = @Index(name = "wallet_id_index", columnList = "wallet_id"),
-        uniqueConstraints= @UniqueConstraint(columnNames = "wallet_id")
+        indexes = @Index(name = "account_number_index", columnList = "account_number"),
+        uniqueConstraints= @UniqueConstraint(columnNames = "account_number")
 )
 public class Wallet extends BaseEntity{
 
-    @Column(name = "wallet_id", length = 10)
-    private long walletId;
+    @Column(name = "account_number", length = 10)
+    private long accountNumber;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "account_type", length = 10)

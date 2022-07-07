@@ -1,7 +1,8 @@
 package com.zurum.lanefinance.dtos.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.zurum.lanefinance.utils.PasswordMatch;
+import com.zurum.lanefinance.utils.validations.PasswordMatch;
+import com.zurum.lanefinance.utils.validations.PhoneNumber;
 import lombok.Builder;
 import lombok.Data;
 
@@ -36,6 +37,7 @@ public class UserRegistrationRequestDto {
     @Size(message = "Password must be greater than 6 and less than 20",min = 6, max = 20)
     private String confirmPassword;
 
+    @PhoneNumber
     @NotBlank(message = "email cannot be empty")
     @Size(message = "Phone number character length cannot be less than 11 and more than 16", min = 11, max = 16)
     private String phoneNumber;
