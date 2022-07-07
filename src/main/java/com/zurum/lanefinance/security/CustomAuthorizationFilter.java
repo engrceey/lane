@@ -33,7 +33,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } else {
             String authorizationHeader = request.getHeader(AUTHORIZATION);
-            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            if (authorizationHeader != null && authorizationHeader.startsWith(SecurityConstants.TOKEN_PREFIX)) {
                 try {
                     String token = authorizationHeader.substring(SecurityConstants.TOKEN_PREFIX.length());
                     Algorithm algorithm = Algorithm.HMAC256(SecurityConstants.SECRET.getBytes());

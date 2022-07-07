@@ -13,8 +13,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -33,8 +33,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                         }
                 );
 
-        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(user.getRoles().toString()));
+                Collection<SimpleGrantedAuthority> authorities = user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
+                .collect(Collectors.toList());
+
+//        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+//        authorities.add(new SimpleGrantedAuthority(user.getRoles().toString()));
 
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),authorities);
     }
