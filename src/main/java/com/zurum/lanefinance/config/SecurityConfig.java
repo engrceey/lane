@@ -41,17 +41,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http.csrf().disable();
-//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//        http.authorizeRequests().antMatchers( "/auth/register").permitAll();
-//        http.authorizeRequests().antMatchers( "/auth/verify-account/**").permitAll();
-//        http.authorizeRequests().antMatchers( "/login").permitAll();
-//        http.authorizeRequests().antMatchers( "/account/**").hasAnyAuthority("USER");
-//        http.authorizeRequests().antMatchers(PUT, "/auth/**").hasAnyAuthority("USER");
-//        http.authorizeRequests().anyRequest().authenticated();
-//        http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
-//        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
-
         http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
                 .antMatchers("/v2/api-docs",
@@ -62,13 +51,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/configuration/security",
                         "/swagger-ui.html",
                         "/webjars/**").permitAll()
+                .antMatchers("/mail/**", "/transaction/**")
+                .hasAnyAuthority("USER")
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new CustomAuthenticationFilter(authenticationManagerBean()))
                 .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-
     }
 
     @Bean
@@ -78,10 +67,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return source;
     }
 
-
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/h2-console/**", "/swagger-ui/**");
+        web.ignoring().antMatchers("/h2-console/**", "/swagger-ui/**" , "/actuator/**");
     }
 
     @Bean
@@ -89,5 +77,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
-
 }
