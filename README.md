@@ -23,7 +23,7 @@ anyway.
 * Actuator app profile management
 
 ### How to Run Locally
-Clone application: git@github.com:engrceey/Financial-data-analysis.git
+Clone application: git clone git@github.com:engrceey/lane.git
 From any suitable IDE (IntelliJ Recommended) and with Java installed (Java 8 and Above) run application
 
 
