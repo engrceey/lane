@@ -33,8 +33,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.concurrent.Future;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -46,7 +49,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final SendMailService sendMailService;
     private final VerificationTokenRepository verificationTokenRepository;
     private final WalletRepository walletRepository;
-    private final RoleRepository repository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
 
@@ -57,11 +60,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (doesUserAlreadyExist(registrationRequestDto.getEmail())) {
             throw new ResourceCreationException("User already exist");
         }
-
         User newUser = saveNewUser(registrationRequestDto);
         Wallet newWallet = createNewWalletAccount(newUser);
-        Future<String> future = sendRegistrationConfirmationEmail(newUser, registrationRequestDto.getEmail());
-
+        sendRegistrationConfirmationEmail(newUser, registrationRequestDto.getEmail());
         return buildRegistrationResponse(newWallet);
     }
 
@@ -72,6 +73,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private User saveNewUser( UserRegistrationRequestDto registrationRequestDto) {
         User newUser = new User();
         Role role = new Role(RoleEnum.USER);
+        roleRepository.save(role);
         ModelMapperUtils.map(registrationRequestDto, newUser);
         newUser.setRoles(Set.of(role));
         newUser.setPassword(passwordEncoder.encode(registrationRequestDto.getPassword()));
@@ -87,16 +89,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return walletRepository.saveAndFlush(newAccount);
     }
 
-    private Future<String> sendRegistrationConfirmationEmail(User user, String email) {
+    private void sendRegistrationConfirmationEmail(User user, String email) {
         String token = generateVerificationToken(user);
-        return sendMailService.sendEmail(EmailDto.builder()
+
+        CompletableFuture.runAsync(() -> sendMailService.sendEmail(EmailDto.builder()
                 .sender("noreply@gmail.com")
                 .subject("Please Activate Your Account")
                 .body("Thank you for Creating your account with us " +
                         "please click on the link below to activate your account : " +
                         "http://localhost:9092/api/v1/account/user/verify-account/" + token)
                 .recipient(email)
-                .build());
+                .build()));
+
     }
 
 
@@ -114,20 +118,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void updateUser(UpdateUserRequestDto updateUserDto, String id) {
-
         log.info("service updateUser - updating user with id :: [{}] ::", id);
         User user = userRepository.findById(id).<ResourceNotFoundException>orElseThrow(
                 () -> {
                     throw new ResourceNotFoundException("user does not exist");
                 }
         );
-
         if (StringUtils.isNoneBlank(updateUserDto.getFirstName()))
             user.setFirstName(updateUserDto.getFirstName());
-
         if (StringUtils.isNoneBlank(updateUserDto.getLastName()))
             user.setLastName(updateUserDto.getLastName());
-
         if (StringUtils.isNoneBlank(updateUserDto.getPhoneNumber()))
             user.setPhoneNumber(updateUserDto.getPhoneNumber());
 
@@ -171,7 +171,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         long newAccountNumber = AccountNumberUtil.generateAccountNumber();
         while (doesAccountAlreadyExit(newAccountNumber)) newAccountNumber = AccountNumberUtil.generateAccountNumber();
         return newAccountNumber;
-
     }
 
 
@@ -184,13 +183,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                             throw new ResourceNotFoundException("user does not exist");
                         }
                 );
-
         Collection<SimpleGrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName().name()))
                 .collect(Collectors.toList());
-
-//        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-//        authorities.add(new SimpleGrantedAuthority(user.getRoles().toString()));
 
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
     }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @RestController
@@ -21,10 +22,14 @@ import javax.validation.Valid;
 public class EmailController {
 
     private final SendMailService sendMailService;
+
     @PostMapping
     public ResponseEntity<ApiResponse<Boolean>> sendMail(@RequestBody @Valid final EmailDto emailDto) {
+        log.info("email controller -: sending email to [{}]", emailDto.getRecipient());
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> sendMailService.sendEmail(emailDto));
+
         return
-                sendMailService.sendEmail(emailDto).isDone() ?
+                future.isDone() ?
                         ResponseEntity.ok(ApiResponse.<Boolean>builder()
                                 .isSuccessful(true)
                                 .statusMessage("email sent successfully")
