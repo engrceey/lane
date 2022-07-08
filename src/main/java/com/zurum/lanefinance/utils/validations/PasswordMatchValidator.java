@@ -1,10 +1,12 @@
 package com.zurum.lanefinance.utils.validations;
 
 import com.zurum.lanefinance.dtos.request.UserRegistrationRequestDto;
+import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+@Component
 public class PasswordMatchValidator implements ConstraintValidator<PasswordMatch, UserRegistrationRequestDto>{
 
     @Override
