@@ -20,6 +20,7 @@ import com.zurum.lanefinance.repository.WalletRepository;
 import com.zurum.lanefinance.service.SendMailService;
 import com.zurum.lanefinance.service.UserService;
 import com.zurum.lanefinance.utils.AccountNumberUtil;
+import com.zurum.lanefinance.utils.AppUtil;
 import com.zurum.lanefinance.utils.ModelMapperUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -97,12 +98,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .subject("Please Activate Your Account")
                 .body("Thank you for Creating your account with us " +
                         "please click on the link below to activate your account : " +
-                        "http://localhost:9092/api/v1/account/user/verify-account/" + token)
+                        "http://localhost:9099/api/v1/account/user/verify-account/" + token)
                 .recipient(email)
                 .build()));
 
     }
-
 
     private String generateVerificationToken(User user) {
         log.info("inside generateVerificationToken, generating token for {}", user.getEmail());
@@ -147,6 +147,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         throw new CustomException("token invalid");
     }
 
+    @Override
+    public User getLoggedInUser(){
+        String loggedInUser = AppUtil.getPrincipal();
+        log.info("AccountServiceImpl getLoggedInUserAccountDetails- logged In user :: [{}]", loggedInUser);
+        return userRepository.getUserByEmail(loggedInUser).orElseThrow(
+                () -> {throw new ResourceNotFoundException("user not found");
+                }
+        );
+    }
 
     private String fetchUserAndEnable(VerificationToken verificationToken) {
         User user = verificationToken.getUser();
@@ -186,7 +195,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Collection<SimpleGrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName().name()))
                 .collect(Collectors.toList());
-
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
     }
 
