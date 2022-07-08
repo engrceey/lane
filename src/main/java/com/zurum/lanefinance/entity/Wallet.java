@@ -30,10 +30,10 @@ public class Wallet extends BaseEntity{
 
     @Column(name = "wallet_balance")
     @Builder.Default
-    private BigDecimal walletBalance = BigDecimal.valueOf(0.0);
+    private BigDecimal accountBalance = BigDecimal.valueOf(0.0);
 
     @Column(name = "wallet_pin", length = 4)
-    private String walletPin;
+    private String pin;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "wallet_currency")
