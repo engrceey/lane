@@ -141,8 +141,6 @@ public class TransactionServiceImpl implements TransactionService {
 
     }
 
-
-
     private Wallet getAccountLogIn(){
         return walletRepository.
                 getAccountByAccountNumber(accountService.getLoggedInUserAccountDetails().getAccountNumber()).get();

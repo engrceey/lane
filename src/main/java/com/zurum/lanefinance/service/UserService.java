@@ -7,7 +7,6 @@ import com.zurum.lanefinance.entity.User;
 
 public interface UserService {
     RegistrationResponseDto registerUser(UserRegistrationRequestDto registrationRequestDto);
-
     User getLoggedInUser();
     void updateUser(UpdateUserRequestDto updateUserDto, String id);
     String verifyAccount(String token);
