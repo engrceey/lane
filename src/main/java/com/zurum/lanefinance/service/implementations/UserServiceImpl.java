@@ -100,7 +100,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                         "please click on the link below to activate your account : " +
                         "http://localhost:9099/api/v1/account/user/verify-account/" + token)
                 .recipient(email)
-                .build()));
+                .build())).exceptionally(exp -> {
+            throw new CustomException("Exception occurred sending mail [message]: "+exp.getLocalizedMessage());
+        });;
 
     }
 
