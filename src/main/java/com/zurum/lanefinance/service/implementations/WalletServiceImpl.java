@@ -46,7 +46,6 @@ public class WalletServiceImpl implements WalletService {
         return true;
     }
 
-
     private boolean validateBalance(long receiverAccountNumber, BigDecimal amount) {
         Wallet account = accountRepository.getAccountByAccountNumber(receiverAccountNumber)
                 .orElseThrow(
