@@ -22,7 +22,7 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @Slf4j
-@Api( tags = "Authentication Controller")
+@Api(tags = "Authentication Controller")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("auth")
