@@ -162,18 +162,18 @@
     </build>
 
 
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.1.2</version>
-                <configuration>
-                    <configLocation>codequality/checkstyle.xml</configLocation>
-                    <encoding>UTF-8</encoding>
-                    <consoleOutput>true</consoleOutput>
-                    <failsOnError>false</failsOnError>
-                </configuration>
+<!--    <reporting>-->
+<!--        <plugins>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-checkstyle-plugin</artifactId>-->
+<!--                <version>3.1.2</version>-->
+<!--                <configuration>-->
+<!--                    <configLocation>codequality/checkstyle.xml</configLocation>-->
+<!--                    <encoding>UTF-8</encoding>-->
+<!--                    <consoleOutput>true</consoleOutput>-->
+<!--                    <failsOnError>false</failsOnError>-->
+<!--                </configuration>-->
 <!--        To Use Default Setting comment out Configuration Above and uncomment this below-->
 <!--                <reportSets>-->
 <!--                    <reportSet>-->
@@ -184,9 +184,9 @@
 <!--                        </reports>-->
 <!--                    </reportSet>-->
 <!--                </reportSets>-->
-            </plugin>
-        </plugins>
-    </reporting>
+<!--            </plugin>-->
+<!--        </plugins>-->
+<!--    </reporting>-->
 
 
 </project>
