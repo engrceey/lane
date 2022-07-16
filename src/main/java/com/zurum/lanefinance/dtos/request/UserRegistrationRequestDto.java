@@ -8,6 +8,7 @@ import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 
@@ -18,10 +19,12 @@ import javax.validation.constraints.Size;
 public class UserRegistrationRequestDto {
 
     @NotBlank(message = "firstName cannot be empty")
+    @Pattern(regexp = "[a-zA-Z]*", message = "FirstName can only have letters")
     @Size(message = "FirstName character length cannot be less than 3 and more than 100", min = 3, max = 100)
     private String firstName;
 
     @NotBlank(message = "Lastname cannot be empty")
+    @Pattern(regexp = "[a-zA-Z]*", message = "lastName can only have letters")
     @Size(message = "Lastname character length cannot be less than 3 and more than 100", min = 3, max = 100)
     private String lastName;
 
