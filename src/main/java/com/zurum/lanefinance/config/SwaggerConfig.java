@@ -45,8 +45,7 @@ public class SwaggerConfig {
     }
 
     //Meta data for swagger
-    private ApiInfo metaInfo()
-    {
+    private ApiInfo metaInfo() {
         return new ApiInfo(
                 "Lane Financial Application API",
                 "This Application manages registrations and transactions",

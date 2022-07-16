@@ -1,6 +1,5 @@
 package com.zurum.lanefinance.controller;
 
-
 import com.zurum.lanefinance.dtos.request.DepositAccountRequestDto;
 import com.zurum.lanefinance.dtos.request.TransferFundRequestDto;
 import com.zurum.lanefinance.dtos.request.WithdrawFundRequestDto;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @Slf4j
-@Api("api/v1/transaction")
+@Api(tags = "Transaction Controller")
 @RestController
 @AllArgsConstructor
 @RequestMapping("/transaction")
@@ -39,7 +38,6 @@ public class TransactionController {
         DepositResponseDto response = transactionService.depositFunds(depositAccountRequestDto);
         return ResponseEntity.ok(ApiResponse.buildSuccessTxn(response));
     }
-
 
     @PostMapping("/withdraw-fund")
     @ApiOperation(value = "withdraw funds",authorizations = { @Authorization(value="Bearer")},
@@ -61,7 +59,6 @@ public class TransactionController {
         log.info("controller transferFunds- for :: [{}]", transferFundRequestDto.getReceiverAccountNumber() );
         TransferResponseDto response = transactionService.transferFunds(transferFundRequestDto);
         return ResponseEntity.ok(ApiResponse.buildSuccessTxn(response));
-
     }
 
 }

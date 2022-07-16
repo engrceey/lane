@@ -22,7 +22,7 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @Slf4j
-@Api("api/v1/auth")
+@Api( tags = "Authentication Controller")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("auth")
@@ -30,7 +30,7 @@ public class AuthController {
 
     private final UserService userService;
 
-    @PostMapping(path="/register")
+    @PostMapping(path = "/register")
     @ApiOperation(value = "Register a user",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE,

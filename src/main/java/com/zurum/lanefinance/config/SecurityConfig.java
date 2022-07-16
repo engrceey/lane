@@ -26,8 +26,7 @@ import static com.zurum.lanefinance.constants.SecurityConstants.SIGN_UP_URL;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@EnableGlobalMethodSecurity(
-        prePostEnabled = true, // (1)
+@EnableGlobalMethodSecurity(prePostEnabled = true, // (1)
         securedEnabled = true, // (2)
         jsr250Enabled = true) // (3)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -41,23 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
-                .antMatchers("/v2/api-docs",
-                        "/configuration/ui",
-                        "/auth/register",
-                        "/login",
-                        "/swagger-resources/**",
-                        "/configuration/security",
-                        "/swagger-ui.html",
-                        "/webjars/**").permitAll()
-                .antMatchers("/mail/**", "/transaction/**")
-                .hasAnyAuthority("USER")
-                .anyRequest().authenticated()
-                .and()
-                .addFilter(new CustomAuthenticationFilter(authenticationManagerBean()))
-                .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.cors().and().csrf().disable().authorizeRequests().antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll().antMatchers("/v2/api-docs", "/configuration/ui", "/auth/register", "/login", "/swagger-resources/**", "/configuration/security", "/swagger-ui.html", "/webjars/**").permitAll().antMatchers("/mail/**", "/transaction/**").hasAnyAuthority("USER").anyRequest().authenticated().and().addFilter(new CustomAuthenticationFilter(authenticationManagerBean())).addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class).sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Bean
@@ -69,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/h2-console/**", "/swagger-ui/**" , "/actuator/**");
+        web.ignoring().antMatchers("/h2-console/**", "/swagger-ui/**", "/actuator/**");
     }
 
     @Bean

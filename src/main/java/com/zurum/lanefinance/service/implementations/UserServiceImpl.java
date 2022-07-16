@@ -39,6 +39,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -52,19 +53,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final WalletRepository walletRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ReentrantLock lock = new ReentrantLock(true);
 
 
     @Override
     @Transactional
     public RegistrationResponseDto registerUser(UserRegistrationRequestDto registrationRequestDto) {
+        lock.lock();
         log.info("register user and create account");
-        if (doesUserAlreadyExist(registrationRequestDto.getEmail())) {
-            throw new ResourceCreationException("User already exist");
+        try {
+            if (doesUserAlreadyExist(registrationRequestDto.getEmail())) {
+                throw new ResourceCreationException("User already exist");
+            }
+            User newUser = saveNewUser(registrationRequestDto);
+            Wallet newWallet = createNewWalletAccount(newUser);
+            sendRegistrationConfirmationEmail(newUser, registrationRequestDto.getEmail());
+            return buildRegistrationResponse(newWallet);
+        } finally {
+            lock.unlock();
         }
-        User newUser = saveNewUser(registrationRequestDto);
-        Wallet newWallet = createNewWalletAccount(newUser);
-        sendRegistrationConfirmationEmail(newUser, registrationRequestDto.getEmail());
-        return buildRegistrationResponse(newWallet);
     }
 
     private RegistrationResponseDto buildRegistrationResponse(Wallet newWallet){
@@ -92,7 +99,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private void sendRegistrationConfirmationEmail(User user, String email) {
         String token = generateVerificationToken(user);
-
         CompletableFuture.runAsync(() -> sendMailService.sendEmail(EmailDto.builder()
                 .sender("noreply@gmail.com")
                 .subject("Please Activate Your Account")
@@ -102,8 +108,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .recipient(email)
                 .build())).exceptionally(exp -> {
             throw new CustomException("Exception occurred sending mail [message]: "+exp.getLocalizedMessage());
-        });;
-
+        });
     }
 
     private String generateVerificationToken(User user) {
@@ -151,17 +156,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User getLoggedInUser(){
-        String loggedInUser = AppUtil.getPrincipal();
-        log.info("AccountServiceImpl getLoggedInUserAccountDetails- logged In user :: [{}]", loggedInUser);
-        return userRepository.getUserByEmail(loggedInUser).orElseThrow(
-                () -> {throw new ResourceNotFoundException("user not found");
-                }
-        );
+        lock.lock();
+        try {
+            String loggedInUser = AppUtil.getPrincipal();
+            log.info("AccountServiceImpl getLoggedInUserAccountDetails- logged In user :: [{}]", loggedInUser);
+            return userRepository.getUserByEmail(loggedInUser).orElseThrow(
+                    () -> {throw new ResourceNotFoundException("user not found");
+                    }
+            );
+        } finally {
+            lock.unlock();
+        }
     }
 
     private String fetchUserAndEnable(VerificationToken verificationToken) {
         User user = verificationToken.getUser();
-
         if (user == null) {
             throw new ResourceNotFoundException("User with token not found");
         }
@@ -199,6 +208,5 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .collect(Collectors.toList());
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
     }
-
 
 }

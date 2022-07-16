@@ -136,7 +136,7 @@ public class TransactionServiceImpl implements TransactionService {
         if (amount > maxAllowableAmount) {
             throw new CustomException(
                     "You cannot "+operation+" "+amount+" try a figure below"+
-                            maxAllowableAmount+" or apply to increase your KYC Level");
+                            maxAllowableAmount+" or apply to increase your transaction Limit");
         }
 
     }
