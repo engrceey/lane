@@ -14,7 +14,7 @@
     <name>lane-finance</name>
     <description>lane financial application</description>
     <properties>
-        <java.version>17</java.version>
+        <java.version>11</java.version>
     </properties>
     <dependencies>
         <dependency>
@@ -174,7 +174,7 @@
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>false</failsOnError>
                 </configuration>
-<!--        To Use Default Setting comment out Configuration Above and uncomment this below-->
+<!--        To Use Costume Setting comment out Configuration Above and uncomment this below-->
 <!--                <reportSets>-->
 <!--                    <reportSet>-->
 <!--                        <reports>-->
