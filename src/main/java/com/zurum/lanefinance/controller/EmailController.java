@@ -3,6 +3,7 @@ package com.zurum.lanefinance.controller;
 import com.zurum.lanefinance.dtos.request.EmailDto;
 import com.zurum.lanefinance.dtos.response.ApiResponse;
 import com.zurum.lanefinance.service.SendMailService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @RestController
+@Api(tags = "Email Controller")
 @AllArgsConstructor
 @RequestMapping("mail")
 public class EmailController {
