@@ -80,7 +80,7 @@ public class ApiExceptionHandler {
                 .data(errorDetails)
                 .build();
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
 
     }
 

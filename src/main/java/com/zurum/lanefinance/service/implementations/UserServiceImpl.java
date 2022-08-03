@@ -38,7 +38,6 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
@@ -74,11 +73,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
     }
 
-    private RegistrationResponseDto buildRegistrationResponse(Wallet newWallet){
+    private RegistrationResponseDto buildRegistrationResponse(Wallet newWallet) {
         return new RegistrationResponseDto(newWallet.getAccountNumber());
     }
 
-    private User saveNewUser( UserRegistrationRequestDto registrationRequestDto) {
+    private User saveNewUser(UserRegistrationRequestDto registrationRequestDto) {
         User newUser = new User();
         Role role = new Role(RoleEnum.USER);
         roleRepository.save(role);
@@ -99,16 +98,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private void sendRegistrationConfirmationEmail(User user, String email) {
         String token = generateVerificationToken(user);
-        CompletableFuture.runAsync(() -> sendMailService.sendEmail(EmailDto.builder()
+         sendMailService.sendEmail(EmailDto.builder()
                 .sender("noreply@gmail.com")
                 .subject("Please Activate Your Account")
                 .body("Thank you for Creating your account with us " +
                         "please click on the link below to activate your account : " +
                         "http://localhost:9099/api/v1/account/user/verify-account/" + token)
                 .recipient(email)
-                .build())).exceptionally(exp -> {
-            throw new CustomException("Exception occurred sending mail [message]: "+exp.getLocalizedMessage());
-        });
+                .build());
     }
 
     private String generateVerificationToken(User user) {
@@ -155,18 +152,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User getLoggedInUser(){
-        lock.lock();
-        try {
-            String loggedInUser = AppUtil.getPrincipal();
-            log.info("AccountServiceImpl getLoggedInUserAccountDetails- logged In user :: [{}]", loggedInUser);
-            return userRepository.getUserByEmail(loggedInUser).orElseThrow(
-                    () -> {throw new ResourceNotFoundException("user not found");
-                    }
-            );
-        } finally {
-            lock.unlock();
-        }
+    public User getLoggedInUser() {
+        String loggedInUser = AppUtil.getPrincipal();
+        if (loggedInUser.equalsIgnoreCase("system"))
+            throw new ResourceNotFoundException("user not found");
+        log.info("AccountServiceImpl getLoggedInUserAccountDetails- logged In user :: [{}]", loggedInUser);
+        return userRepository.getUserByEmail(loggedInUser).orElseThrow(
+                () -> {
+                    throw new ResourceNotFoundException("user not found");
+                }
+        );
     }
 
     private String fetchUserAndEnable(VerificationToken verificationToken) {

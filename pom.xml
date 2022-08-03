@@ -174,15 +174,15 @@
                     <failsOnError>false</failsOnError>
                 </configuration>
 <!--        To Use Costume Setting comment out Configuration Above and uncomment this below-->
-<!--                <reportSets>-->
-<!--                    <reportSet>-->
-<!--                        <reports>-->
-<!--                            <report>-->
-<!--                                checkstyle-->
-<!--                            </report>-->
-<!--                        </reports>-->
-<!--                    </reportSet>-->
-<!--                </reportSets>-->
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>
+                                 checkstyle
+                            </report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
         </plugins>
     </reporting>

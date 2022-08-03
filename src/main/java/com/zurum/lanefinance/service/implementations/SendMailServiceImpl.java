@@ -18,6 +18,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -37,7 +38,10 @@ public class SendMailServiceImpl implements SendMailService {
         };
 
         try {
-            mailSender.send(mimeMessagePreparator);
+            CompletableFuture.runAsync(() ->
+            mailSender.send(mimeMessagePreparator)).exceptionally(exp -> {
+                throw new CustomException("Exception occurred sending mail [message]: " + exp.getLocalizedMessage());
+            });
             log.info("email has sent!!");
         }catch (MailException exception) {
             log.error("Exception occurred when sending mail {}",exception.getMessage());

@@ -40,7 +40,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable().authorizeRequests().antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll().antMatchers("/v2/api-docs", "/configuration/ui", "/auth/register", "/login", "/swagger-resources/**", "/configuration/security", "/swagger-ui.html", "/webjars/**").permitAll().antMatchers("/mail/**", "/transaction/**").hasAnyAuthority("USER").anyRequest().authenticated().and().addFilter(new CustomAuthenticationFilter(authenticationManagerBean())).addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class).sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.cors().and().csrf().disable()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
+                .antMatchers("/v2/api-docs",
+                        "/configuration/ui",
+                        "/auth/register",
+                        "/login",
+                        "/swagger-resources/**",
+                        "/configuration/security",
+                        "/swagger-ui.html",
+                        "/webjars/**").permitAll()
+                .antMatchers("/mail/**",
+                        "/transaction/**")
+                .hasAnyAuthority("USER")
+                .anyRequest().authenticated()
+                .and()
+                .addFilter(new CustomAuthenticationFilter(authenticationManagerBean()))
+                .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Bean
