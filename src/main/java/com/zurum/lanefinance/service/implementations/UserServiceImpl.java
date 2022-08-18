@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         long newAccountNumber = getNewAccountNumber();
         newAccount.setAccountNumber(newAccountNumber);
         newAccount.setUser(user);
-        return walletRepository.saveAndFlush(newAccount);
+        return walletRepository.save(newAccount);
     }
 
     private void sendRegistrationConfirmationEmail(User user, String email) {
