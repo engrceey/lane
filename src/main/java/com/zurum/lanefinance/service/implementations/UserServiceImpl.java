@@ -7,7 +7,7 @@ import com.zurum.lanefinance.dtos.request.UpdateUserRequestDto;
 import com.zurum.lanefinance.dtos.request.UserRegistrationRequestDto;
 import com.zurum.lanefinance.dtos.response.RegistrationResponseDto;
 import com.zurum.lanefinance.entity.Role;
-import com.zurum.lanefinance.entity.User;
+import com.zurum.lanefinance.entity.AppUser;
 import com.zurum.lanefinance.entity.VerificationToken;
 import com.zurum.lanefinance.entity.Wallet;
 import com.zurum.lanefinance.exceptions.CustomException;
@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             if (doesUserAlreadyExist(registrationRequestDto.getEmail())) {
                 throw new ResourceCreationException("User already exist");
             }
-            User newUser = saveNewUser(registrationRequestDto);
+            AppUser newUser = saveNewUser(registrationRequestDto);
             Wallet newWallet = createNewWalletAccount(newUser);
             sendRegistrationConfirmationEmail(newUser, registrationRequestDto.getEmail());
             return buildRegistrationResponse(newWallet);
@@ -77,8 +77,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return new RegistrationResponseDto(newWallet.getAccountNumber());
     }
 
-    private User saveNewUser(UserRegistrationRequestDto registrationRequestDto) {
-        User newUser = new User();
+    private AppUser saveNewUser(UserRegistrationRequestDto registrationRequestDto) {
+        AppUser newUser = new AppUser();
         Role role = new Role(RoleEnum.USER);
         roleRepository.save(role);
         ModelMapperUtils.map(registrationRequestDto, newUser);
@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.saveAndFlush(newUser);
     }
 
-    private Wallet createNewWalletAccount(User user) {
+    private Wallet createNewWalletAccount(AppUser user) {
         Wallet newAccount = new Wallet();
         long newAccountNumber = getNewAccountNumber();
         newAccount.setAccountNumber(newAccountNumber);
@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return walletRepository.save(newAccount);
     }
 
-    private void sendRegistrationConfirmationEmail(User user, String email) {
+    private void sendRegistrationConfirmationEmail(AppUser user, String email) {
         String token = generateVerificationToken(user);
          sendMailService.sendEmail(EmailDto.builder()
                 .sender("noreply@gmail.com")
@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .build());
     }
 
-    private String generateVerificationToken(User user) {
+    private String generateVerificationToken(AppUser user) {
         log.info("inside generateVerificationToken, generating token for {}", user.getEmail());
         String token = UUID.randomUUID().toString();
         VerificationToken verificationToken = new VerificationToken();
@@ -123,7 +123,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void updateUser(UpdateUserRequestDto updateUserDto, String id) {
         log.info("service updateUser - updating user with id :: [{}] ::", id);
-        User user = userRepository.findById(id).<ResourceNotFoundException>orElseThrow(
+        AppUser user = userRepository.findById(id).<ResourceNotFoundException>orElseThrow(
                 () -> {
                     throw new ResourceNotFoundException("user does not exist");
                 }
@@ -152,7 +152,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User getLoggedInUser() {
+    public AppUser getLoggedInUser() {
         String loggedInUser = AppUtil.getPrincipal();
         if (loggedInUser.equalsIgnoreCase("system"))
             throw new ResourceNotFoundException("user not found");
@@ -165,7 +165,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     private String fetchUserAndEnable(VerificationToken verificationToken) {
-        User user = verificationToken.getUser();
+        AppUser user = verificationToken.getUser();
         if (user == null) {
             throw new ResourceNotFoundException("User with token not found");
         }
@@ -192,7 +192,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         log.info("userService loadUserByUserName - email :: [{}] ::", email);
-        User user = userRepository.getUserByEmail(email)
+        AppUser user = userRepository.getUserByEmail(email)
                 .orElseThrow(
                         () -> {
                             throw new ResourceNotFoundException("user does not exist");

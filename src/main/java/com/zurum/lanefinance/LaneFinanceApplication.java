@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.Instant;
 @EnableAsync
 @SpringBootApplication
+
 public class LaneFinanceApplication {
 
 	public static void main(String[] args) {

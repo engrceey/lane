@@ -15,7 +15,7 @@ import java.util.Set;
 @AllArgsConstructor
 @SuperBuilder
 @Table(name = "users", uniqueConstraints= @UniqueConstraint(columnNames = "email"))
-public class User extends BaseEntity {
+public class AppUser extends BaseEntity {
 
     @Column(name = "firstname", length = 100)
     private String firstName;

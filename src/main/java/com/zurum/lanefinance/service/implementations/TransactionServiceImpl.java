@@ -8,7 +8,7 @@ import com.zurum.lanefinance.dtos.response.DepositResponseDto;
 import com.zurum.lanefinance.dtos.response.FetchAccountResponseDto;
 import com.zurum.lanefinance.dtos.response.TransferResponseDto;
 import com.zurum.lanefinance.dtos.response.WithdrawFundResponseDto;
-import com.zurum.lanefinance.entity.User;
+import com.zurum.lanefinance.entity.AppUser;
 import com.zurum.lanefinance.entity.Wallet;
 import com.zurum.lanefinance.exceptions.CustomException;
 import com.zurum.lanefinance.exceptions.InsufficientBalanceException;
@@ -131,7 +131,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     private void checkKYCLevel(double amount, String operation){
-        User loggedInUser = userService.getLoggedInUser();
+        AppUser loggedInUser = userService.getLoggedInUser();
         double maxAllowableAmount = loggedInUser.getKycLevel().getTrnMaxLimit();
         if (amount > maxAllowableAmount) {
             throw new CustomException(

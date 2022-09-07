@@ -27,9 +27,9 @@ public class VerificationToken {
 
     private Boolean isUsed = false;
 
-    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @OneToOne(targetEntity = AppUser.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_id")
-    private User user;
+    private AppUser user;
 
     private Date expiration;
 

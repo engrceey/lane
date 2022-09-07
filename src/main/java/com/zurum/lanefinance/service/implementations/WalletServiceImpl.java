@@ -2,7 +2,7 @@ package com.zurum.lanefinance.service.implementations;
 
 import com.zurum.lanefinance.dtos.request.ActivateAccountRequestDto;
 import com.zurum.lanefinance.dtos.response.FetchAccountResponseDto;
-import com.zurum.lanefinance.entity.User;
+import com.zurum.lanefinance.entity.AppUser;
 import com.zurum.lanefinance.entity.Wallet;
 import com.zurum.lanefinance.exceptions.ResourceNotFoundException;
 import com.zurum.lanefinance.repository.UserRepository;
@@ -59,7 +59,7 @@ public class WalletServiceImpl implements WalletService {
         log.info("AccountServiceImpl getLoggedInUserAccountDetails- :: ");
         String loggedInUser = AppUtil.getPrincipal();
         log.info("AccountServiceImpl getLoggedInUserAccountDetails- logged In user :: [{}]", loggedInUser);
-        User user =  userRepository.getUserByEmail(loggedInUser).orElseThrow(
+        AppUser user =  userRepository.getUserByEmail(loggedInUser).orElseThrow(
                 () -> {throw new ResourceNotFoundException("user not found");
                 }
         );

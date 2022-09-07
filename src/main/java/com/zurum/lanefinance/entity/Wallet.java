@@ -45,6 +45,6 @@ public class Wallet extends BaseEntity{
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
-    private User user;
+    private AppUser user;
 
 }
