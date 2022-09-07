@@ -82,7 +82,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Role role = new Role(RoleEnum.USER);
         roleRepository.save(role);
         ModelMapperUtils.map(registrationRequestDto, newUser);
-        newUser.setRoles(Set.of(role));
+        Set<Role> roles = new java.util.HashSet<>();
+        roles.add(role);
+        newUser.setRoles(roles);
         newUser.setPassword(passwordEncoder.encode(registrationRequestDto.getPassword()));
         newUser.setKycLevel(KycLevel.TIER_1);
         return userRepository.saveAndFlush(newUser);

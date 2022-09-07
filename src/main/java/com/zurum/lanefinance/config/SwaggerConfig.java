@@ -19,6 +19,8 @@ public class SwaggerConfig {
 
     @Bean
     public Docket api() {
+        List<SecurityScheme> securitySchemes = new java.util.ArrayList<>();
+        securitySchemes.add(apiKey());
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.any())
@@ -26,7 +28,7 @@ public class SwaggerConfig {
                 .build()
                 .apiInfo(metaInfo())
                 .securityContexts(Collections.singletonList(securityContext()))
-                .securitySchemes(List.of(apiKey()));
+                .securitySchemes(securitySchemes);
     }
 
     private ApiKey apiKey() {
@@ -41,7 +43,9 @@ public class SwaggerConfig {
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope;
-        return List.of(new SecurityReference("JWT", authorizationScopes));
+        List<SecurityReference> securityReferences = new java.util.ArrayList<>();
+        securityReferences.add(new SecurityReference("JWT", authorizationScopes));
+        return securityReferences;
     }
 
     //Meta data for swagger

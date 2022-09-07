@@ -17,7 +17,7 @@ public class ModelMapperUtils {
     private static final ModelMapper modelMapper;
 
     static {
-        Condition<?, ?> isStringBlank = new AbstractCondition<>() {
+        Condition<?, ?> isStringBlank = new AbstractCondition<Object, Object>() {
             @Override
             public boolean applies(MappingContext<Object, Object> context) {
                 if (context.getSource() instanceof String) {
